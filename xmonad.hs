@@ -15,87 +15,38 @@
 -}
 
 import XMonad
+import qualified XMonad.Hooks.EwmhDesktops as E
 import XMonad.Hooks.SetWMName
 import XMonad.Layout.Grid
 import XMonad.Layout.ResizableTile
 import XMonad.Layout.IM
 import XMonad.Layout.ThreeColumns
 import XMonad.Layout.NoBorders
-import XMonad.Layout.Circle
 import XMonad.Layout.PerWorkspace (onWorkspace)
 import XMonad.Layout.Fullscreen
 import XMonad.Util.EZConfig
-import XMonad.Util.Run
-import XMonad.Hooks.DynamicLog
-import XMonad.Actions.Plane
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.UrgencyHook
-import XMonad.Hooks.ICCCMFocus
 import qualified XMonad.StackSet as W
-import qualified Data.Map as M
 import Data.Ratio ((%))
+import System.Taffybar.Hooks.PagerHints (pagerHints)
 
 {-
   Xmonad configuration variables. These settings control some of the
   simpler parts of xmonad's behavior and are straightforward to tweak.
 -}
 
-myModMask            = mod4Mask       -- changes the mod key to "super"
-myFocusedBorderColor = "#ff0000"      -- color of focused border
-myNormalBorderColor  = "#cccccc"      -- color of inactive border
-myBorderWidth        = 1              -- width of border around windows
-myTerminal           = "terminator"   -- which terminal software to use
-myIMRosterTitle      = "Buddy List"   -- title of roster on IM workspace
-                                      -- use "Buddy List" for Pidgin, but
-                                      -- "Contact List" for Empathy
+myModMask            = mod4Mask         -- changes the mod key to "super"
+myFocusedBorderColor = "#ff0000"        -- color of focused border
+myNormalBorderColor  = "#cccccc"        -- color of inactive border
+myBorderWidth        = 1                -- width of border around windows
+myTerminal           = "gnome-terminal" -- which terminal software to use
+myIMRosterTitle      = "Buddy List"     -- title of roster on IM workspace
+                                        -- use "Buddy List" for Pidgin, but
+                                        -- "Contact List" for Empathy
+myOtherIMRosterTitle = "jiri.marsik89 - Skype™"
 
 
-{-
-  Xmobar configuration variables. These settings control the appearance
-  of text which xmonad is sending to xmobar via the DynamicLog hook.
--}
-
-myTitleColor     = "#eeeeee"  -- color of window title
-myTitleLength    = 80         -- truncate window title to this length
-myCurrentWSColor = "#e6744c"  -- color of active workspace
-myVisibleWSColor = "#c185a7"  -- color of inactive workspace
-myUrgentWSColor  = "#cc0000"  -- color of workspace with 'urgent' window
-myCurrentWSLeft  = "["        -- wrap active workspace with these
-myCurrentWSRight = "]"
-myVisibleWSLeft  = "("        -- wrap inactive workspace with these
-myVisibleWSRight = ")"
-myUrgentWSLeft  = "{"         -- wrap urgent workspace with these
-myUrgentWSRight = "}"
-
-
-{-
-  Workspace configuration. Here you can change the names of your
-  workspaces. Note that they are organized in a grid corresponding
-  to the layout of the number pad.
-
-  I would recommend sticking with relatively brief workspace names
-  because they are displayed in the xmobar status bar, where space
-  can get tight. Also, the workspace labels are referred to elsewhere
-  in the configuration file, so when you change a label you will have
-  to find places which refer to it and make a change there as well.
-
-  This central organizational concept of this configuration is that
-  the workspaces correspond to keys on the number pad, and that they
-  are organized in a grid which also matches the layout of the number pad.
-  So, I don't recommend changing the number of workspaces unless you are
-  prepared to delve into the workspace navigation keybindings section
-  as well.
--}
-
-myWorkspaces =
-  [
-    "7:Chat",  "8:Dbg", "9:Pix",
-    "4:Docs",  "5:Dev", "6:Web",
-    "1:Term",  "2:Hub", "3:Mail",
-    "0:VM",    "Extr1", "Extr2"
-  ]
-
-startupWorkspace = "5:Dev"  -- which workspace do you want to be on after launch?
 
 {-
   Layout configuration. In this section we identify which xmonad
@@ -133,7 +84,7 @@ defaultLayouts = smartBorders(avoidStruts(
   ||| noBorders Full
 
   -- ThreeColMid layout puts the large master window in the center
-  -- of the screen. As configured below, by default it takes of 3/4 of
+  -- of the screen. As configured below, by default it takes 3/4 of
   -- the available space. Remaining windows tile to both the left and
   -- right of the master window. You can resize using "super-h" and
   -- "super-l".
@@ -153,12 +104,15 @@ defaultLayouts = smartBorders(avoidStruts(
 -- workspaces based on the functionality of that workspace.
 
 -- The chat layout uses the "IM" layout. We have a roster which takes
--- up 1/8 of the screen vertically, and the remaining space contains
+-- up 1/7 of the screen vertically, and the remaining space contains
 -- chat windows which are tiled using the grid layout. The roster is
 -- identified using the myIMRosterTitle variable, and by default is
 -- configured for Pidgin, so if you're using something else you
 -- will want to modify that variable.
-chatLayout = avoidStruts(withIM (1%7) (Title myIMRosterTitle) Grid)
+chatLayout = avoidStruts $
+             withIM (1%7) (Title myIMRosterTitle) $
+             withIM (2%7) (Title myOtherIMRosterTitle) $
+             GridRatio 1
 
 -- The GIMP layout uses the ThreeColMid layout. The traditional GIMP
 -- floating panels approach is a bit of a challenge to handle with xmonad;
@@ -171,8 +125,8 @@ gimpLayout = smartBorders(avoidStruts(ThreeColMid 1 (3/100) (3/4)))
 -- Here we combine our default layouts with our specific, workspace-locked
 -- layouts.
 myLayouts =
-  onWorkspace "7:Chat" chatLayout
-  $ onWorkspace "9:Pix" gimpLayout
+  onWorkspace "7" chatLayout
+  $ onWorkspace "9" gimpLayout
   $ defaultLayouts
 
 
@@ -208,9 +162,22 @@ myKeyBindings =
     , ((myModMask, xK_p), spawn "synapse")
     , ((myModMask .|. mod1Mask, xK_space), spawn "synapse")
     , ((myModMask, xK_u), focusUrgent)
-    , ((0, 0x1008FF12), spawn "amixer -q set Master toggle")
-    , ((0, 0x1008FF11), spawn "amixer -q set Master 10%-")
-    , ((0, 0x1008FF13), spawn "amixer -q set Master 10%+")
+    , ((0, 0x1008FF12), spawn "amixer -c 1 -q set Master toggle")
+    , ((0, 0x1008FF11), spawn "amixer -c 1 -q set Master 10%-")
+    , ((0, 0x1008FF13), spawn "amixer -c 1 -q set Master 10%+")
+  ] ++
+  [
+    ((m .|. myModMask, key), screenWorkspace sc
+      >>= flip whenJust (windows . f))
+      | (key, sc) <- zip [xK_w, xK_e, xK_r] [1,0,2]
+      , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]
+  ] ++
+  [
+    ((m .|. myModMask, k), windows $ f i)
+       | (i, k) <- [("7", xK_KP_Home), ("8", xK_KP_Up),    ("9", xK_KP_Page_Up),
+                    ("4", xK_KP_Left), ("5", xK_KP_Begin), ("6", xK_KP_Right),
+                    ("1", xK_KP_End),  ("2", xK_KP_Down),  ("3", xK_KP_Page_Down)]
+       , (f, m) <- [(W.greedyView, 0), (W.shift, shiftMask)]
   ]
 
 
@@ -225,7 +192,7 @@ myKeyBindings =
   window (before the arrow), and then how that window should be treated
   (after the arrow).
 
-  To figure out to identify your window, you will need to use a
+  To figure out how to identify your window, you will need to use a
   command-line tool called "xprop". When you run xprop, your cursor
   will temporarily change to crosshairs; click on the window you
   want to identify. In the output that is printed in your terminal,
@@ -258,73 +225,11 @@ myKeyBindings =
 -}
 
 myManagementHooks :: [ManageHook]
-myManagementHooks = [
-  resource =? "synapse" --> doIgnore
+myManagementHooks =
+  [ resource =? "synapse" --> doIgnore
   , resource =? "stalonetray" --> doIgnore
-  , className =? "rdesktop" --> doFloat
-  , (className =? "Komodo IDE") --> doF (W.shift "5:Dev")
-  , (className =? "Komodo IDE" <&&> resource =? "Komodo_find2") --> doFloat
-  , (className =? "Komodo IDE" <&&> resource =? "Komodo_gotofile") --> doFloat
-  , (className =? "Komodo IDE" <&&> resource =? "Toplevel") --> doFloat
-  , (className =? "Empathy") --> doF (W.shift "7:Chat")
-  , (className =? "Pidgin") --> doF (W.shift "7:Chat")
-  , (className =? "Gimp-2.8") --> doF (W.shift "9:Pix")
-  ]
-
-
-{-
-  Workspace navigation keybindings. This is probably the part of the
-  configuration I have spent the most time messing with, but understand
-  the least. Be very careful if messing with this section.
--}
-
--- We define two lists of keycodes for use in the rest of the
--- keyboard configuration. The first is the list of numpad keys,
--- in the order they occur on the keyboard (left to right and
--- top to bottom). The second is the list of number keys, in an
--- order corresponding to the numpad. We will use these to
--- make workspace navigation commands work the same whether you
--- use the numpad or the top-row number keys. And, we also
--- use them to figure out where to go when the user
--- uses the arrow keys.
-numPadKeys =
-  [
-    xK_KP_Home, xK_KP_Up, xK_KP_Page_Up
-    , xK_KP_Left, xK_KP_Begin,xK_KP_Right
-    , xK_KP_End, xK_KP_Down, xK_KP_Page_Down
-    , xK_KP_Insert, xK_KP_Delete, xK_KP_Enter
-  ]
-
-numKeys =
-  [
-    xK_7, xK_8, xK_9
-    , xK_4, xK_5, xK_6
-    , xK_1, xK_2, xK_3
-    , xK_0, xK_minus, xK_equal
-  ]
-
--- Here, some magic occurs that I once grokked but has since
--- fallen out of my head. Essentially what is happening is
--- that we are telling xmonad how to navigate workspaces,
--- how to send windows to different workspaces,
--- and what keys to use to change which monitor is focused.
-myKeys = myKeyBindings ++
-  [
-    ((m .|. myModMask, k), windows $ f i)
-       | (i, k) <- zip myWorkspaces numPadKeys
-       , (f, m) <- [(W.greedyView, 0), (W.shift, shiftMask)]
-  ] ++
-  [
-    ((m .|. myModMask, k), windows $ f i)
-       | (i, k) <- zip myWorkspaces numKeys
-       , (f, m) <- [(W.greedyView, 0), (W.shift, shiftMask)]
-  ] ++
-  M.toList (planeKeys myModMask (Lines 4) Finite) ++
-  [
-    ((m .|. myModMask, key), screenWorkspace sc
-      >>= flip whenJust (windows . f))
-      | (key, sc) <- zip [xK_w, xK_e, xK_r] [1,0,2]
-      , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]
+  , (className =? "Pidgin") --> doF (W.shift "7")
+  , (className =? "Skype") --> doF (W.shift "7")
   ]
 
 
@@ -335,32 +240,23 @@ myKeys = myKeyBindings ++
 -}
 
 main = do
-  xmproc <- spawnPipe "xmobar ~/.xmonad/xmobarrc"
-  xmonad $ withUrgencyHook NoUrgencyHook $ defaultConfig {
+  xmonad $
+    withUrgencyHook NoUrgencyHook $
+    E.ewmh $
+    pagerHints $
+    def {
     focusedBorderColor = myFocusedBorderColor
   , normalBorderColor = myNormalBorderColor
   , terminal = myTerminal
   , borderWidth = myBorderWidth
   , layoutHook = myLayouts
-  , workspaces = myWorkspaces
   , modMask = myModMask
   , handleEventHook = fullscreenEventHook
   , startupHook = do
       setWMName "LG3D"
-      windows $ W.greedyView startupWorkspace
       spawn "~/.xmonad/startup-hook"
-  , manageHook = manageHook defaultConfig
+  , manageHook = manageHook def
       <+> composeAll myManagementHooks
       <+> manageDocks
-  , logHook = takeTopFocus <+> dynamicLogWithPP xmobarPP {
-      ppOutput = hPutStrLn xmproc
-      , ppTitle = xmobarColor myTitleColor "" . shorten myTitleLength
-      , ppCurrent = xmobarColor myCurrentWSColor ""
-        . wrap myCurrentWSLeft myCurrentWSRight
-      , ppVisible = xmobarColor myVisibleWSColor ""
-        . wrap myVisibleWSLeft myVisibleWSRight
-      , ppUrgent = xmobarColor myUrgentWSColor ""
-        . wrap myUrgentWSLeft myUrgentWSRight
-    }
   }
-    `additionalKeys` myKeys
+    `additionalKeys` myKeyBindings
