@@ -51,6 +51,13 @@ xrandr | grep 'DP2-2 connected' | ifne xrandr --output DP2-2 --auto --left-of eD
 # To set your backgrounds, run nitrogren /path/to/images
 nitrogen --restore &
 
+#
+# LOCK THE SCREEN WHEN IDLE
+#
+
+xautolock -time 10 -locker "gnome-screensaver-command --lock" -notify 10 \
+          -notifier "notify-send -i gtk-dialog-info 'Locking in 10 seconds'" &
+
 # Run the gnome-keyring-daemon to avoid issues you otherwise may encounter
 # when using gnome applications which expect access to the keyring, such
 # as Empathy. This prevents prompts you may otherwise get for invalid

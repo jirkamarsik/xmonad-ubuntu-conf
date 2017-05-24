@@ -80,12 +80,7 @@ defaultLayouts = smartBorders(avoidStruts(
 
   -- Full layout makes every window full screen. When you toggle the
   -- active window, it will bring the active window to the front.
-  ||| noBorders Full
-
-  -- Grid layout tries to equally distribute windows in the available
-  -- space, increasing the number of columns and rows as necessary.
-  -- Master window is at top left.
-  ||| Grid))
+  ||| noBorders Full))
 
 
 -- Here we define some layouts which will be assigned to specific
@@ -142,9 +137,9 @@ myKeyBindings =
     , ((myModMask .|. mod1Mask, xK_space), spawn "synapse")
     , ((myModMask, xK_u), focusUrgent)
     , ((myModMask .|. shiftMask, xK_z), spawn "gnome-screensaver-command --lock")
-    , ((0, 0x1008FF12), spawn "amixer -c 1 -q set Master toggle")
-    , ((0, 0x1008FF11), spawn "amixer -c 1 -q set Master 10%-")
-    , ((0, 0x1008FF13), spawn "amixer -c 1 -q set Master 10%+")
+    , ((0, 0x1008FF12), spawn "pulse-volume.sh toggle")
+    , ((0, 0x1008FF11), spawn "pulse-volume.sh decrease")
+    , ((0, 0x1008FF13), spawn "pulse-volume.sh increase")
   ] ++
   [
     ((m .|. myModMask, key), screenWorkspace sc

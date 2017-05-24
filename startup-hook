@@ -12,9 +12,7 @@
 # TRAY ICON SOFTWARE
 #
 
-pkill taffybar
-taffybar 0 &
-taffybar 1 &
+restart-taffybar
 
 # Pidgin chat client
 if [ -z "$(pgrep pidgin)" ] ; then
