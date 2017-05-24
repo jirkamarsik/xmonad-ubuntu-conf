@@ -82,17 +82,6 @@ defaultLayouts = smartBorders(avoidStruts(
   -- active window, it will bring the active window to the front.
   ||| noBorders Full
 
-  -- ThreeColMid layout puts the large master window in the center
-  -- of the screen. As configured below, by default it takes 3/4 of
-  -- the available space. Remaining windows tile to both the left and
-  -- right of the master window. You can resize using "super-h" and
-  -- "super-l".
-  -- ||| ThreeColMid 1 (3/100) (3/4)
-
-  -- Circle layout places the master window in the center of the screen.
-  -- Remaining windows appear in a circle around it
-  -- ||| Circle
-
   -- Grid layout tries to equally distribute windows in the available
   -- space, increasing the number of columns and rows as necessary.
   -- Master window is at top left.
@@ -152,6 +141,7 @@ myKeyBindings =
     , ((myModMask, xK_p), spawn "synapse")
     , ((myModMask .|. mod1Mask, xK_space), spawn "synapse")
     , ((myModMask, xK_u), focusUrgent)
+    , ((myModMask .|. shiftMask, xK_z), spawn "gnome-screensaver-command --lock")
     , ((0, 0x1008FF12), spawn "amixer -c 1 -q set Master toggle")
     , ((0, 0x1008FF11), spawn "amixer -c 1 -q set Master 10%-")
     , ((0, 0x1008FF13), spawn "amixer -c 1 -q set Master 10%+")
