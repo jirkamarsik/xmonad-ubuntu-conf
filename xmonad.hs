@@ -20,7 +20,6 @@ import XMonad.Hooks.SetWMName
 import XMonad.Layout.Grid
 import XMonad.Layout.ResizableTile
 import XMonad.Layout.IM
-import XMonad.Layout.ThreeColumns
 import XMonad.Layout.NoBorders
 import XMonad.Layout.PerWorkspace (onWorkspace)
 import XMonad.Layout.Fullscreen
@@ -114,19 +113,10 @@ chatLayout = avoidStruts $
              withIM (2%7) (Title myOtherIMRosterTitle) $
              GridRatio 1
 
--- The GIMP layout uses the ThreeColMid layout. The traditional GIMP
--- floating panels approach is a bit of a challenge to handle with xmonad;
--- I find the best solution is to make the image you are working on the
--- master area, and then use this ThreeColMid layout to make the panels
--- tile to the left and right of the image. If you use GIMP 2.8, you
--- can use single-window mode and avoid this issue.
-gimpLayout = smartBorders(avoidStruts(ThreeColMid 1 (3/100) (3/4)))
-
 -- Here we combine our default layouts with our specific, workspace-locked
 -- layouts.
 myLayouts =
   onWorkspace "7" chatLayout
-  $ onWorkspace "9" gimpLayout
   $ defaultLayouts
 
 
