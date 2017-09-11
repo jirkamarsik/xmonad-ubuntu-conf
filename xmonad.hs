@@ -35,6 +35,7 @@ import System.Taffybar.Hooks.PagerHints (pagerHints)
   simpler parts of xmonad's behavior and are straightforward to tweak.
 -}
 
+myWorkspaces         = map show [1..9]
 myModMask            = mod4Mask         -- changes the mod key to "super"
 myFocusedBorderColor = "#ff0000"        -- color of focused border
 myNormalBorderColor  = "#cccccc"        -- color of inactive border
@@ -136,15 +137,19 @@ myKeyBindings =
     , ((myModMask, xK_p), spawn "synapse")
     , ((myModMask .|. mod1Mask, xK_space), spawn "synapse")
     , ((myModMask, xK_u), focusUrgent)
-    , ((myModMask .|. shiftMask, xK_z), spawn "gnome-screensaver-command --lock")
+    , ((myModMask .|. shiftMask, xK_z), spawn "lock")
     , ((0, 0x1008FF12), spawn "pulse-volume.sh toggle")
     , ((0, 0x1008FF11), spawn "pulse-volume.sh decrease")
     , ((0, 0x1008FF13), spawn "pulse-volume.sh increase")
   ] ++
   [
+    ((myModMask,               xK_KP_Enter), windows W.swapMaster),
+    ((myModMask .|. shiftMask, xK_KP_Enter), spawn myTerminal)
+  ] ++
+  [
     ((m .|. myModMask, key), screenWorkspace sc
       >>= flip whenJust (windows . f))
-      | (key, sc) <- zip [xK_w, xK_e, xK_r] [1,0,2]
+      | (key, sc) <- [(xK_w, 1), (xK_e, 0), (xK_r, 2)]
       , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]
   ] ++
   [
@@ -201,10 +206,11 @@ myKeyBindings =
 
 myManagementHooks :: [ManageHook]
 myManagementHooks =
-  [ resource =? "synapse" --> doIgnore
-  , resource =? "stalonetray" --> doIgnore
-  , (className =? "Pidgin") --> doF (W.shift "7")
-  , (className =? "Skype") --> doF (W.shift "7")
+  [ appName =? "synapse" --> doIgnore
+  , appName =? "stalonetray" --> doIgnore
+  , className =? "Pidgin" --> doShift "7"
+  , className =? "Skype" --> doShift "7"
+  , className =? "Skype Preview" --> doShift "7"
   ]
 
 
@@ -226,9 +232,10 @@ main = do
   , borderWidth = myBorderWidth
   , layoutHook = myLayouts
   , modMask = myModMask
-  , handleEventHook = fullscreenEventHook
+  , handleEventHook = mconcat [ docksEventHook
+                              , fullscreenEventHook ]
   , startupHook = do
-      setWMName "LG3D"
+      setWMName "LG3D" -- fix for Java Swing apps
       spawn "~/.xmonad/startup-hook"
   , manageHook = manageHook def
       <+> composeAll myManagementHooks

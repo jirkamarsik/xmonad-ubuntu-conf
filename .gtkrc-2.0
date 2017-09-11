@@ -1,7 +1,11 @@
-gtk-theme-name="Ambiance"
-gtk-icon-theme-name="Humanity-Dark"
-gtk-font-name="Ubuntu 10"
-gtk-cursor-theme-name="DMZ-White"
+# DO NOT EDIT! This file will be overwritten by LXAppearance.
+# Any customization should be done in ~/.gtkrc-2.0.mine instead.
+
+include "/home/jirka/.gtkrc-2.0.mine"
+gtk-theme-name="Breeze"
+gtk-icon-theme-name="Adwaita"
+gtk-font-name="Roboto 10"
+gtk-cursor-theme-name="mate"
 gtk-cursor-theme-size=0
 gtk-toolbar-style=GTK_TOOLBAR_BOTH
 gtk-toolbar-icon-size=GTK_ICON_SIZE_LARGE_TOOLBAR
