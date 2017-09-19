@@ -1,9 +1,9 @@
 #!/bin/bash
-# 
+#
 # xmonad "startup hook" script. This gets run after xmonad is initialized,
-# via the startupHook facility provided by xmonad. It's useful for 
+# via the startupHook facility provided by xmonad. It's useful for
 # running any programs which you want to use within xmonad but
-# which don't need to be initialized before xmonad is running. 
+# which don't need to be initialized before xmonad is running.
 #
 # Author: David Brewer
 # Repository: https://github.com/davidbrewer/xmonad-ubuntu-conf
@@ -43,7 +43,7 @@ fi
 # APPLICATION LAUNCHER
 #
 
-# Use synapse as our app launcher. (-s: don't display until requested) 
+# Use synapse as our app launcher. (-s: don't display until requested)
 if [ -z "$(pgrep synapse)" ] ; then
     synapse -s &
 fi
@@ -68,10 +68,10 @@ if [ -z "$(pgrep cbatticon)" ] ; then
     cbatticon --command-critical-level "systemctl suspend" &
 fi
 
-# On login, we unlock the ssh keychain so we're not prompted for 
-# passphrases later. We pipe /dev/null to ssh-add to make it realize 
+# On login, we unlock the ssh keychain so we're not prompted for
+# passphrases later. We pipe /dev/null to ssh-add to make it realize
 # it's not running in a terminal. Otherwise, it won't launch the prompt.
-# 
+#
 # If you don't use the ssh keychain you may not want this. Commented
 # by default as it is assumed many users will not want this feature.
 
