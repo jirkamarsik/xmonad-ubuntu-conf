@@ -44,7 +44,7 @@ myTerminal           = "gnome-terminal" -- which terminal software to use
 myIMRosterTitle      = "Buddy List"     -- title of roster on IM workspace
                                         -- use "Buddy List" for Pidgin, but
                                         -- "Contact List" for Empathy
-myOtherIMRosterTitle = "jiri.marsik89 - Skype™"
+myOtherIMRosterTitle = "Skype Preview"
 
 
 
