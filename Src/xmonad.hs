@@ -44,7 +44,6 @@ myTerminal           = "gnome-terminal" -- which terminal software to use
 myIMRosterTitle      = "Buddy List"     -- title of roster on IM workspace
                                         -- use "Buddy List" for Pidgin, but
                                         -- "Contact List" for Empathy
-myOtherIMRosterTitle = "Skype Preview"
 
 
 
@@ -95,7 +94,6 @@ defaultLayouts = smartBorders(avoidStruts(
 -- will want to modify that variable.
 chatLayout = avoidStruts $
              withIM (1%7) (Title myIMRosterTitle) $
-             withIM (2%7) (Title myOtherIMRosterTitle) $
              GridRatio 1
 
 -- Here we combine our default layouts with our specific, workspace-locked
@@ -209,8 +207,6 @@ myManagementHooks =
   [ appName =? "synapse" --> doIgnore
   , appName =? "stalonetray" --> doIgnore
   , className =? "Pidgin" --> doShift "7"
-  , className =? "Skype" --> doShift "7"
-  , className =? "Skype Preview" --> doShift "7"
   ]
 
 

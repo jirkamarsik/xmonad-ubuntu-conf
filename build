@@ -1,0 +1,36 @@
+#!/bin/sh -eu
+
+################################################################################
+# Edit this file and then rename it to ~/.xmonad/build
+
+################################################################################
+# The directory holding your source code and stack.yaml file:
+SRC_DIR=~/.xmonad
+
+################################################################################
+# The name of the executable produced by stack.  This comes from the
+# executable section of your Cabal file.
+EXE_NAME=my-xmonad-config
+
+################################################################################
+# This script will be given a single argument, the path to the
+# executable it should produce.
+output_file=$1; shift
+
+################################################################################
+cd $SRC_DIR
+stack build
+
+# Do the copy!
+SOURCE=$(stack exec which $EXE_NAME)
+TARGET=$output_file
+# mv -u $SOURCE $TARGET
+# cp -u $SOURCE $TARGET
+# cp -uf $SOURCE $TARGET
+# rm -f $TARGET.old && mv $TARGET $TARGET.old && mv $SOURCE $TARGET
+# First, backup:
+if [ -f $TARGET ]; then
+  rm -f $TARGET.old && mv $TARGET $TARGET.old
+fi
+# Then, copy the new stuff in:
+cp $SOURCE $TARGET

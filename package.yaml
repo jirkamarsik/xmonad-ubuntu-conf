@@ -1,0 +1,29 @@
+name:                my-xmonad-config
+version:             0.1.0.0
+github:              "jirkamarsik/xmonad-ubuntu-conf"
+license:             BSD3
+author:              "Jirka Marsik"
+maintainer:          "jiri.marsik89@gmail.com"
+copyright:           "Copyright (C) 2017-2018 Jiri Marsik"
+
+extra-source-files:
+- README.md
+
+# Metadata used when publishing your package
+synopsis:            My xmonad configuration, now used in Arch Linux
+category:            Graphics
+
+# To avoid duplicated efforts in documentation and dealing with the
+# complications of embedding Haddock markup inside cabal files, it is
+# common to point users to the README.md file.
+description:         Please see the README on Github at <https://github.com/jirkamarsik/xmonad-ubuntu-conf#readme>
+
+dependencies:
+- base >= 4.7 && < 5
+- taffybar
+- xmonad
+- xmonad-contrib
+
+executable:
+  main: xmonad.hs
+  source-dirs: Src

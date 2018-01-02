@@ -19,20 +19,15 @@ if [ -z "$(pgrep pidgin)" ] ; then
     pidgin &
 fi
 
-# Skype client
-if [ -z "$(pgrep skype)" ] ; then
-    skypeforlinux &
-fi
-
 # Applet for managing print jobs from the tray.
 if [ -z "$(pgrep system-config-printer-applet)" ] ; then
     system-config-printer-applet &
 fi
 
-# Start redshift with applet (not yet installed)
-#if [ -z "(pgrep redshift-gtk)" ] ; then
-#    redshift-gtk &
-#fi
+# Start redshift with applet
+# if [ -z "(pgrep redshift-gtk)" ] ; then
+#     redshift-gtk &
+# fi
 
 # Emacs server
 if [ -z "$(pgrep emacs)" ]; then
