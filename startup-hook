@@ -38,9 +38,9 @@ fi
 # APPLICATION LAUNCHER
 #
 
-# Use synapse as our app launcher. (-s: don't display until requested)
-if [ -z "$(pgrep synapse)" ] ; then
-    synapse -s &
+# use albert as our app launcher
+if [ -z "$(pgrep albert)" ] ; then
+    albert &
 fi
 
 # Screen saver and locker

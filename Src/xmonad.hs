@@ -132,9 +132,8 @@ myKeyBindings =
     ((myModMask, xK_b), sendMessage ToggleStruts)
     , ((myModMask, xK_a), sendMessage MirrorShrink)
     , ((myModMask, xK_z), sendMessage MirrorExpand)
-    , ((myModMask, xK_p), spawn "synapse")
-    , ((myModMask .|. mod1Mask, xK_space), spawn "synapse")
     , ((myModMask, xK_u), focusUrgent)
+    , ((myModMask, xK_p), spawn "albert show")
     , ((myModMask .|. shiftMask, xK_z), spawn "lock")
     , ((0, 0x1008FF12), spawn "pulse-volume.sh toggle")
     , ((0, 0x1008FF11), spawn "pulse-volume.sh decrease")
@@ -204,7 +203,6 @@ myKeyBindings =
 
 myManagementHooks :: [ManageHook]
 myManagementHooks =
-  [ appName =? "synapse" --> doIgnore
   , appName =? "stalonetray" --> doIgnore
   , className =? "Pidgin" --> doShift "7"
   ]
